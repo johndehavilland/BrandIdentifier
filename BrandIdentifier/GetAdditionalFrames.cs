@@ -118,7 +118,7 @@ namespace BrandIdentifier
             string brandSpecificTag = "brand_specific_end";
             if (isStart)
             {
-                brandSpecificTag = "brand_specific_start";
+                brandSpecificTag = "brand_specific_begin";
             }
 
             string start = GetStartTime(position, isStart);
@@ -141,12 +141,13 @@ namespace BrandIdentifier
             process.WaitForExit();
 
             List<frame> frameList = new List<frame>();
-
+            log.Info("about to run predictions");
             for (int i = 1; i < 15; i++)
             {
                 string outputFile = Path.Combine(downloadPath, fileName + "_" + i + ".jpg");
+                log.Info("output file " + outputFile);
                 var result = ReadFileAndAnalyze(outputFile);
-
+                log.Info(result);
                 dynamic customVisionResults = JsonConvert.DeserializeObject(result);
                 if (customVisionResults.predictions != null)
                 {
@@ -155,6 +156,8 @@ namespace BrandIdentifier
                         decimal probability = (decimal)item.probability;
                         if (probability >= .02m)
                         {
+                            log.Info("Got Probability " + probability);
+                            log.Info("Got TagName " + item.tagName);
                             if (item.tagName == brandSpecificTag)
                             {
                                 frameList.Add(new frame
@@ -180,11 +183,11 @@ namespace BrandIdentifier
 
                 if (isStart)
                 {
-                    newTime = GetNewTime(start, match.id - 3);
+                    newTime = GetNewTime(start, match.id - 2);
                 }
                 else
                 {
-                    newTime = GetNewTime(start, match.id + 3);
+                    newTime = GetNewTime(start, match.id);
 
                 }
             }
