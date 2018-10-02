@@ -187,7 +187,7 @@ namespace BrandIdentifier
                 }
                 else
                 {
-                    newTime = GetNewTime(start, match.id);
+                    newTime = GetNewTime(start, match.id + 2);
 
                 }
             }
@@ -218,6 +218,10 @@ namespace BrandIdentifier
             if (isStart)
             {
                 startFrame = startFrame - 15;
+            }
+            if (startFrame < 0)
+            {
+                startFrame = 0;
             }
             double seconds = startFrame / 25;
             TimeSpan final = TimeSpan.FromSeconds(seconds);
